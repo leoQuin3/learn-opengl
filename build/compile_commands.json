@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/nano/Projects/learn-opengl-linux/build",
+  "command": "/usr/bin/g++ -I/home/nano/Projects/learn-opengl-linux/src/include -g -o CMakeFiles/learn_opengl_linux_project.dir/src/main.cpp.o -c /home/nano/Projects/learn-opengl-linux/src/main.cpp",
+  "file": "/home/nano/Projects/learn-opengl-linux/src/main.cpp",
+  "output": "CMakeFiles/learn_opengl_linux_project.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/nano/Projects/learn-opengl-linux/build",
+  "command": "/usr/bin/g++ -I/home/nano/Projects/learn-opengl-linux/src/include -g -o CMakeFiles/learn_opengl_linux_project.dir/src/shader.cpp.o -c /home/nano/Projects/learn-opengl-linux/src/shader.cpp",
+  "file": "/home/nano/Projects/learn-opengl-linux/src/shader.cpp",
+  "output": "CMakeFiles/learn_opengl_linux_project.dir/src/shader.cpp.o"
+},
+{
+  "directory": "/home/nano/Projects/learn-opengl-linux/build",
+  "command": "/usr/bin/g++ -I/home/nano/Projects/learn-opengl-linux/src/include -g -o CMakeFiles/learn_opengl_linux_project.dir/src/camera.cpp.o -c /home/nano/Projects/learn-opengl-linux/src/camera.cpp",
+  "file": "/home/nano/Projects/learn-opengl-linux/src/camera.cpp",
+  "output": "CMakeFiles/learn_opengl_linux_project.dir/src/camera.cpp.o"
+},
+{
+  "directory": "/home/nano/Projects/learn-opengl-linux/build",
+  "command": "/usr/bin/g++ -I/home/nano/Projects/learn-opengl-linux/src/include -g -o CMakeFiles/learn_opengl_linux_project.dir/src/stb_image.cpp.o -c /home/nano/Projects/learn-opengl-linux/src/stb_image.cpp",
+  "file": "/home/nano/Projects/learn-opengl-linux/src/stb_image.cpp",
+  "output": "CMakeFiles/learn_opengl_linux_project.dir/src/stb_image.cpp.o"
+},
+{
+  "directory": "/home/nano/Projects/learn-opengl-linux/build",
+  "command": "/usr/bin/gcc -I/home/nano/Projects/learn-opengl-linux/src/include -g -o CMakeFiles/learn_opengl_linux_project.dir/src/glad/glad.c.o -c /home/nano/Projects/learn-opengl-linux/src/glad/glad.c",
+  "file": "/home/nano/Projects/learn-opengl-linux/src/glad/glad.c",
+  "output": "CMakeFiles/learn_opengl_linux_project.dir/src/glad/glad.c.o"
+}
+]

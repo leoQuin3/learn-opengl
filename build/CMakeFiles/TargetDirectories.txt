@@ -1,0 +1,3 @@
+/home/nano/Projects/learn-opengl-linux/build/CMakeFiles/learn_opengl_linux_project.dir
+/home/nano/Projects/learn-opengl-linux/build/CMakeFiles/edit_cache.dir
+/home/nano/Projects/learn-opengl-linux/build/CMakeFiles/rebuild_cache.dir
