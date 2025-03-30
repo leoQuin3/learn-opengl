@@ -1,0 +1,14 @@
+# Ignore ALL log files
+*.log
+
+# Ignore build directory
+target/
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.ninja
+*.make
+compile_commands.json
+
