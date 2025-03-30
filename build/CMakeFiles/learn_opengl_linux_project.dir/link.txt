@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/learn_opengl_linux_project.dir/src/main.cpp.o CMakeFiles/learn_opengl_linux_project.dir/src/shader.cpp.o CMakeFiles/learn_opengl_linux_project.dir/src/camera.cpp.o CMakeFiles/learn_opengl_linux_project.dir/src/glad/glad.c.o -o learn_opengl_linux_project  -lglfw 
