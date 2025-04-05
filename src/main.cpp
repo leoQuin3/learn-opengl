@@ -38,7 +38,8 @@ void scrollCallback(GLFWwindow *window, double xOffset, double yOffset);
 
 /*
     TODO:
-        - Start on Lighting > Materials
+        - Finish exercise on Lighting > Materials...
+        - Create materials
 */
 
 int main()
@@ -176,31 +177,50 @@ int main()
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
+        // Delta time
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         processInput(window);
-
+        
         glClearColor(.08f, .08f, .1f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Render Cube
+        
+        // Activate Cube shader
+        cubeShader.use();
+        
+        // Cube lighting
+        double lightR = 1.;
+        double lightG = 1.;
+        double lightB = 1.;
+        lightColor = glm::vec3(lightR, lightG, lightB);
+        glm::vec3 lightDiffuseColor = lightColor * glm::vec3(1.f);
+        glm::vec3 lightAmbientColor = lightDiffuseColor * glm::vec3(.15f);
+        glm::vec3 lightSpecularColor = lightDiffuseColor * glm::vec3(1.f);
+        cubeShader.setVec3("light.ambient",  lightAmbientColor);
+        cubeShader.setVec3("light.diffuse",  lightDiffuseColor);
+        cubeShader.setVec3("light.specular", lightSpecularColor);
+        
+        // Cube material
+        cubeShader.setVec3("material.ambient", glm::vec3(1.f));
+        cubeShader.setVec3("material.diffuse", glm::vec3(1.f));
+        cubeShader.setVec3("material.specular",glm::vec3(1.f));
+        cubeShader.setFloat("material.shininess", 25.f);
+        
+        // Transforms
         glm::mat4 model = glm::mat4(1.f);
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(SCREEN_WIDTH) / SCREEN_HEIGHT, 0.1f, 100.f);
         glm::mat3 normalModel = glm::transpose(glm::inverse(model));
-
-        cubeShader.use();
         cubeShader.setMat4("model", model);
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat3("normalModel", normalModel);
-        cubeShader.setVec3("objectColor", glm::vec3(1.f, .5f, .3f));
-        cubeShader.setVec3("lightColor", glm::vec3(1.f, 1.f, 1.f));
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", camera.position);
-        
+
+        // Render Cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
