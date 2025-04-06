@@ -29,9 +29,9 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
     if (direction == RIGHT)
         position += right * velocity;
     if (direction == UP)
-        position += up * velocity;
-    if (direction == DOWN)
         position -= up * velocity;
+    if (direction == DOWN)
+        position += up * velocity;
 }
 
 void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constraintPitch)
@@ -54,7 +54,7 @@ void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constr
 
 void Camera::processMouseScroll(float yoffset)
 {
-    fov += (float)yoffset;
+    fov -= (float)yoffset;
     if (fov < 1.f)
         fov = 1.f;
     if (fov > MAX_FOV)

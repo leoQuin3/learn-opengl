@@ -38,8 +38,7 @@ void scrollCallback(GLFWwindow *window, double xOffset, double yOffset);
 
 /*
     TODO:
-        - Finish exercise on Lighting > Materials...
-        - Create materials
+        - Move onto Lighting Maps
 */
 
 int main()
@@ -196,17 +195,17 @@ int main()
         double lightB = 1.;
         lightColor = glm::vec3(lightR, lightG, lightB);
         glm::vec3 lightDiffuseColor = lightColor * glm::vec3(1.f);
-        glm::vec3 lightAmbientColor = lightDiffuseColor * glm::vec3(.15f);
+        glm::vec3 lightAmbientColor = lightDiffuseColor * glm::vec3(.2f);
         glm::vec3 lightSpecularColor = lightDiffuseColor * glm::vec3(1.f);
         cubeShader.setVec3("light.ambient",  lightAmbientColor);
         cubeShader.setVec3("light.diffuse",  lightDiffuseColor);
         cubeShader.setVec3("light.specular", lightSpecularColor);
         
         // Cube material
-        cubeShader.setVec3("material.ambient", glm::vec3(1.f));
-        cubeShader.setVec3("material.diffuse", glm::vec3(1.f));
-        cubeShader.setVec3("material.specular",glm::vec3(1.f));
-        cubeShader.setFloat("material.shininess", 25.f);
+        cubeShader.setVec3("material.ambient", glm::vec3(0.2745, 0.11175, 0.11175));
+        cubeShader.setVec3("material.diffuse", glm::vec3(0.61424, 0.04136, 0.04136));
+        cubeShader.setVec3("material.specular",glm::vec3(0.727811, 0.626959, 0.626959));
+        cubeShader.setFloat("material.shininess", 60.f);
         
         // Transforms
         glm::mat4 model = glm::mat4(1.f);
