@@ -11,4 +11,4 @@ Makefile
 *.ninja
 *.make
 compile_commands.json
-
+CMakePresets.json
