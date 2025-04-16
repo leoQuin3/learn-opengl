@@ -7,7 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-enum Camera_Movement {
+enum Camera_Movement
+{
     FORWARD,
     BACKWARD,
     LEFT,
@@ -16,35 +17,43 @@ enum Camera_Movement {
     DOWN
 };
 
-class Camera {
-public:
-    glm::vec3 position;
-    glm::vec3 front;
-    glm::vec3 up;
-    glm::vec3 right;
-    glm::vec3 worldUp;
+class Camera
+{
+    public:
 
+    // Properties
     const float MAX_FOV = 100.f;
-
+    const float MIN_FOV = 0.f;
     float mouseSensitivity = .1f;
     float movementSpeed = 2.5f;
     float yaw = -90.f;
     float pitch = 0.f;
     float fov = 45.f;
-
+    glm::vec3 position;
+    
+    // Constructors
     Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up);
     Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, glm::vec3 worldUp);
     Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, float yaw, float pitch, float movementSpeed, float mouseSensitivity);
-
+    
+    // Callback functions
     void processKeyboard(Camera_Movement direction, float deltaTime);
     void processMouseMovement(float xoffset, float yoffset, GLboolean constraintPitch = true);
     void processMouseScroll(float yoffset);
-
+    
+    // Methods
     void lookAtPosition(glm::vec3 position);
+    glm::mat4 getViewMatrix() const;
 
-    glm::mat4 getViewMatrix();
+    private:
 
-private:
+    // Camera vectors
+    glm::vec3 front;
+    glm::vec3 up;
+    glm::vec3 right;
+    glm::vec3 worldUp;
+    
+    // Reconstruct vectors
     void updateCameraVectors();
 };
 #endif

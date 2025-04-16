@@ -20,13 +20,15 @@ const char* EMIT_TEXTURE_PATH = "../assets/matrix.jpg";
 
 float deltaTime = 0.f;
 float lastFrame = 0.f;
+float totalTime = 0.f;
 
 float lastX = SCREEN_WIDTH / 2;
 float lastY = SCREEN_HEIGHT / 2;
 
 // Camera
-Camera camera = Camera(glm::vec3(0.f, 0.f, 3.f), glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
+const glm::vec3 INITIAL_CAM_POS = glm::vec3(0.f, 0.f, 3.f);
 bool firstMouse = true;
+Camera camera = Camera(INITIAL_CAM_POS, glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 
 // Light
 glm::vec3 lightPos(1.f, 1.5f, .74f);
@@ -41,7 +43,7 @@ unsigned int loadTexture(char const *path);
 
 /*
     TODO:
-        - Move onto Lighting Maps
+        - Move onto Light Casters
         - Uncomment some lines to activate the matrix! vvv
 */
 
@@ -66,7 +68,7 @@ int main()
 
     // Register functions
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    // glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetCursorPosCallback(window, mouseCallback);
     glfwSetScrollCallback(window, scrollCallback);
 
     // Load functions
@@ -157,7 +159,7 @@ int main()
     // Create lighting maps
     unsigned int diffuseMap = loadTexture(DIFFUSE_TEXTURE_PATH);
     unsigned int specularMap = loadTexture(SPEC_TEXTURE_PATH);
-    // unsigned int emissionMap = loadTexture(EMIT_TEXTURE_PATH);   // Uncomment to activate the matrix!
+    unsigned int emissionMap = loadTexture(EMIT_TEXTURE_PATH);
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
@@ -226,9 +228,6 @@ int main()
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        //Lock camera onto light position
-        camera.lookAtPosition(lightPos);
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -269,6 +268,17 @@ void processInput(GLFWwindow *window)
         camera.processKeyboard(Camera_Movement::UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
         camera.processKeyboard(Camera_Movement::DOWN, deltaTime);
+    
+    // Focus on cube
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+        camera.lookAtPosition(glm::vec3(0.f));
+
+    // Reset position and rotation
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+        camera.position = INITIAL_CAM_POS;
+        camera.lookAtPosition(glm::vec3(0.f));
+    }
 }
 
 // Rotate camera using mouse
