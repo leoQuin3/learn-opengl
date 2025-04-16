@@ -16,8 +16,6 @@ enum Camera_Movement {
     DOWN
 };
 
-// TODO: Add "focus" control: pressing 'f' to focus (once) at object
-
 class Camera {
 public:
     glm::vec3 position;
@@ -41,6 +39,8 @@ public:
     void processKeyboard(Camera_Movement direction, float deltaTime);
     void processMouseMovement(float xoffset, float yoffset, GLboolean constraintPitch = true);
     void processMouseScroll(float yoffset);
+
+    void lookAtPosition(glm::vec3 position);
 
     glm::mat4 getViewMatrix();
 

@@ -60,6 +60,16 @@ void Camera::processMouseScroll(float yoffset)
     if (fov > MAX_FOV)
         fov = MAX_FOV;
 }
+
+void Camera::lookAtPosition(glm::vec3 position)
+{
+    glm::vec3 lookDir = glm::normalize(position - this->position);
+    this->pitch = glm::degrees(glm::asin(lookDir.y));
+    this->yaw = glm::degrees(glm::atan(lookDir.z, lookDir.x));
+    
+    updateCameraVectors();
+}
+
 glm::mat4 Camera::getViewMatrix()
 {
     glm::mat4 translation = glm::mat4(

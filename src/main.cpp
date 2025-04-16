@@ -66,7 +66,7 @@ int main()
 
     // Register functions
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    glfwSetCursorPosCallback(window, mouseCallback);
+    // glfwSetCursorPosCallback(window, mouseCallback);
     glfwSetScrollCallback(window, scrollCallback);
 
     // Load functions
@@ -225,6 +225,9 @@ int main()
 
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        //Lock camera onto light position
+        camera.lookAtPosition(lightPos);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
