@@ -16,6 +16,8 @@ enum Camera_Movement {
     DOWN
 };
 
+// TODO: Add "focus" control: pressing 'f' to focus (once) at object
+
 class Camera {
 public:
     glm::vec3 position;

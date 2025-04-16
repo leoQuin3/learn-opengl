@@ -14,7 +14,9 @@ const unsigned int SCREEN_HEIGHT = 1080;
 const char* VERTEX_FILE_PATH = "../vert.glsl";
 const char* CUBE_FRAG_FILE_PATH = "../cube_frag.glsl";
 const char* LIGHT_FRAG_FILE_PATH = "../light_frag.glsl";
-const char* IMAGE_TEXTURE_PATH = "../awesomeface.png";
+const char* DIFFUSE_TEXTURE_PATH = "../assets/container2.png";
+const char* SPEC_TEXTURE_PATH = "../assets/container2_specular.png";
+const char* EMIT_TEXTURE_PATH = "../assets/matrix.jpg";
 
 float deltaTime = 0.f;
 float lastFrame = 0.f;
@@ -35,10 +37,12 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height);
 void processCallback(GLFWwindow *window);
 void mouseCallback(GLFWwindow *window, double xPos, double yPos);
 void scrollCallback(GLFWwindow *window, double xOffset, double yOffset);
+unsigned int loadTexture(char const *path);
 
 /*
     TODO:
         - Move onto Lighting Maps
+        - Uncomment some lines to activate the matrix! vvv
 */
 
 int main()
@@ -72,31 +76,33 @@ int main()
         return -1;
     }
 
+    // Create Shader Programs
     Shader cubeShader(VERTEX_FILE_PATH, CUBE_FRAG_FILE_PATH);
     Shader lightShader(VERTEX_FILE_PATH, LIGHT_FRAG_FILE_PATH);
 
+    // Verticies of a cube
     float vertices[] = {
-        // Position          // Normal           // Texture Coordinates
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+        // Position          // Normal            // Texture Coordinates
+       -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,
-        0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 0.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f,
-        0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
@@ -105,19 +111,19 @@ int main()
         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+       -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
     // -- Cube VAO --
@@ -148,27 +154,10 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);   // Position
     glEnableVertexAttribArray(0);
 
-    // Load cube texture
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(IMAGE_TEXTURE_PATH, &width, &height, &nrChannels, STBI_rgb_alpha);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "ERROR::Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    // Create lighting maps
+    unsigned int diffuseMap = loadTexture(DIFFUSE_TEXTURE_PATH);
+    unsigned int specularMap = loadTexture(SPEC_TEXTURE_PATH);
+    // unsigned int emissionMap = loadTexture(EMIT_TEXTURE_PATH);   // Uncomment to activate the matrix!
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
@@ -189,25 +178,15 @@ int main()
         // Activate Cube shader
         cubeShader.use();
         
-        // Cube lighting
-        double lightR = 1.;
-        double lightG = 1.;
-        double lightB = 1.;
-        lightColor = glm::vec3(lightR, lightG, lightB);
-        glm::vec3 lightDiffuseColor = lightColor * glm::vec3(1.f);
-        glm::vec3 lightAmbientColor = lightDiffuseColor * glm::vec3(.2f);
-        glm::vec3 lightSpecularColor = lightDiffuseColor * glm::vec3(1.f);
-        cubeShader.setVec3("light.ambient",  lightAmbientColor);
-        cubeShader.setVec3("light.diffuse",  lightDiffuseColor);
-        cubeShader.setVec3("light.specular", lightSpecularColor);
+        // Render Cube
+        cubeShader.setVec3("light.ambient",  lightColor * .2f);
+        cubeShader.setVec3("light.diffuse",  lightColor);
+        cubeShader.setVec3("light.specular", lightColor);
+        cubeShader.setInt("material.diffuse", 0);
+        cubeShader.setInt("material.specular", 1);
+        cubeShader.setInt("material.emission", 2);
+        cubeShader.setFloat("material.shininess", 64.f);
         
-        // Cube material
-        cubeShader.setVec3("material.ambient", glm::vec3(0.2745, 0.11175, 0.11175));
-        cubeShader.setVec3("material.diffuse", glm::vec3(0.61424, 0.04136, 0.04136));
-        cubeShader.setVec3("material.specular",glm::vec3(0.727811, 0.626959, 0.626959));
-        cubeShader.setFloat("material.shininess", 60.f);
-        
-        // Transforms
         glm::mat4 model = glm::mat4(1.f);
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(SCREEN_WIDTH) / SCREEN_HEIGHT, 0.1f, 100.f);
@@ -218,8 +197,14 @@ int main()
         cubeShader.setMat3("normalModel", normalModel);
         cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", camera.position);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+        // glActiveTexture(GL_TEXTURE2);    // Uncomment to activate the matrix!
+        // glBindTexture(GL_TEXTURE_2D, emissionMap);
 
-        // Render Cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -228,7 +213,6 @@ int main()
         float newZ = 1.5f * glm::sin((double)glfwGetTime());
         float newY = .5f + glm::atan(newZ + 1.5);
         lightPos = glm::vec3(newX, newY, newZ);
-
         model = glm::mat4(1.f);
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(.5f));
@@ -248,6 +232,7 @@ int main()
 
     // Clean up
     glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteVertexArrays(1, &lightVAO);
     glDeleteBuffers(1, &VBO);
     glfwTerminate();
     return 0;
@@ -306,4 +291,53 @@ void mouseCallback(GLFWwindow *window, double xPos, double yPos)
 void scrollCallback(GLFWwindow *window, double xOffset, double yOffset)
 {
     camera.processMouseScroll(static_cast<float>(yOffset));
+}
+
+// Load texture
+unsigned int loadTexture(char const* path)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        GLenum format;
+        switch (nrComponents)
+        {
+            case 1:
+                format = GL_RED;
+                break;
+            case 2:
+                format = GL_RG;
+                break;
+            case 3:
+                format = GL_RGB;
+                break;
+            case 4:
+                format = GL_RGBA;
+                break;
+            default:
+                format = GL_RGB;
+                break;
+        }
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "ERROR::Failed to load texture at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
