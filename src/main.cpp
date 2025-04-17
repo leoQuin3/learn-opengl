@@ -128,6 +128,20 @@ int main()
        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
+    // Cube positions
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
     // -- Cube VAO --
     unsigned int VBO, cubeVAO;
     glGenVertexArrays(1, &cubeVAO);
@@ -190,15 +204,21 @@ int main()
         cubeShader.setFloat("material.shininess", 64.f);
         
         glm::mat4 model = glm::mat4(1.f);
+        glm::mat3 normalModel = glm::transpose(glm::inverse(model));
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(SCREEN_WIDTH) / SCREEN_HEIGHT, 0.1f, 100.f);
-        glm::mat3 normalModel = glm::transpose(glm::inverse(model));
         cubeShader.setMat4("model", model);
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat3("normalModel", normalModel);
-        cubeShader.setVec3("lightPos", lightPos);
         cubeShader.setVec3("viewPos", camera.position);
+        cubeShader.setFloat("light.constant", 1.f);
+        cubeShader.setFloat("light.linear", .09f);
+        cubeShader.setFloat("light.quadratic", .032f);
+        cubeShader.setVec3("light.position", camera.position);
+        cubeShader.setVec3("light.direction", camera.getFront());
+        cubeShader.setFloat("light.cutOff", glm::cos(glm::radians(15.5f)));
+        cubeShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -208,25 +228,38 @@ int main()
         // glBindTexture(GL_TEXTURE_2D, emissionMap);
 
         glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // Draw multiple cubes
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            float angle = 20.f * i;
+            model = glm::mat4(1.f);
+            model = glm::translate(model, cubePositions[i]);
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.f, .3f, .5f));
+            normalModel = glm::transpose(glm::inverse(model));
+            cubeShader.setMat4("model", model);
+            cubeShader.setMat3("normalModel", normalModel);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         // Render Light
-        float newX = 1.5f * glm::cos((double)glfwGetTime());
-        float newZ = 1.5f * glm::sin((double)glfwGetTime());
-        float newY = .5f + glm::atan(newZ + 1.5);
-        lightPos = glm::vec3(newX, newY, newZ);
-        model = glm::mat4(1.f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(.5f));
+        // float newX = 1.5f * glm::cos((double)glfwGetTime());
+        // float newZ = 1.5f * glm::sin((double)glfwGetTime());
+        // float newY = .5f + glm::atan(newZ + 1.5);
+        // lightPos = glm::vec3(newX, newY, newZ);
+        // model = glm::mat4(1.f);
+        // model = glm::translate(model, lightPos);
+        // model = glm::scale(model, glm::vec3(.5f));
 
-        lightShader.use();
-        lightShader.setMat4("model", model);
-        lightShader.setMat4("view", view);
-        lightShader.setMat4("projection", projection);
-        lightShader.setVec3("lightColor", lightColor);
+        // lightShader.use();
+        // lightShader.setMat4("model", model);
+        // lightShader.setMat4("view", view);
+        // lightShader.setMat4("projection", projection);
+        // lightShader.setVec3("lightColor", lightColor);
 
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // glBindVertexArray(lightVAO);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

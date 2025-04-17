@@ -44,6 +44,7 @@ class Camera
     // Methods
     void lookAtPosition(glm::vec3 position);
     glm::mat4 getViewMatrix() const;
+    glm::vec3 getFront() const;
 
     private:
 

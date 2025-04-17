@@ -87,6 +87,11 @@ glm::mat4 Camera::getViewMatrix() const
     return rotation * translation;
 }
 
+glm::vec3 Camera::getFront() const
+{
+    return front;
+}
+
 void Camera::updateCameraVectors()
 {
     front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
