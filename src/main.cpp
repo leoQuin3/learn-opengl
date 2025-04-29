@@ -11,7 +11,7 @@
 const unsigned int SCREEN_WIDTH = 1080;
 const unsigned int SCREEN_HEIGHT = 1080;
 
-// NOTE: Make sure the executive is one directory down from project root (ie. make sure its built in './build/' minus quotes)
+// NOTE: Make sure the executable is one directory down from project root (ie. something like '{root}/build/' minus the quotes)
 const char* VERTEX_FILE_PATH = "../vert.glsl";
 const char* CUBE_FRAG_FILE_PATH = "../cube_frag.glsl";
 const char* LIGHT_FRAG_FILE_PATH = "../light_frag.glsl";
@@ -37,7 +37,6 @@ glm::vec3 lightColor(1.f);
 
 void processInput(GLFWwindow *window);
 void framebufferSizeCallback(GLFWwindow *window, int width, int height);
-void processCallback(GLFWwindow *window);
 void mouseCallback(GLFWwindow *window, double xPos, double yPos);
 void scrollCallback(GLFWwindow *window, double xOffset, double yOffset);
 unsigned int loadTexture(char const *path);
@@ -296,6 +295,12 @@ void processInput(GLFWwindow *window)
         camera.processKeyboard(Camera_Movement::LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.processKeyboard(Camera_Movement::RIGHT, deltaTime);
+
+    // Sprinting
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera.isSprinting = true;
+    else
+        camera.isSprinting = false;
 
     // Vertical Movement
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)

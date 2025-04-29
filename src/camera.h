@@ -25,10 +25,10 @@ class Camera
     const float MAX_FOV = 100.f;
     const float MIN_FOV = 0.f;
     float mouseSensitivity = .1f;
-    float movementSpeed = 2.5f;
     float yaw = -90.f;
     float pitch = 0.f;
     float fov = 45.f;
+    bool isSprinting = false;
     glm::vec3 position;
     
     // Constructors
@@ -45,6 +45,7 @@ class Camera
     void lookAtPosition(glm::vec3 position);
     glm::mat4 getViewMatrix() const;
     glm::vec3 getFront() const;
+    float getSpeed() const;
 
     private:
 
@@ -53,6 +54,10 @@ class Camera
     glm::vec3 up;
     glm::vec3 right;
     glm::vec3 worldUp;
+
+    // Properties
+    float movementSpeed = 2.5f;
+    float maxSpeed = 6.f;
     
     // Reconstruct vectors
     void updateCameraVectors();

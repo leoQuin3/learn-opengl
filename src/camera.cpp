@@ -18,7 +18,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, float yaw, flo
 
 void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
 {
-    float velocity = movementSpeed * deltaTime;
+    float velocity = getSpeed() * deltaTime;
 
     if (direction == FORWARD)
         position += front * velocity;
@@ -90,6 +90,14 @@ glm::mat4 Camera::getViewMatrix() const
 glm::vec3 Camera::getFront() const
 {
     return front;
+}
+
+float Camera::getSpeed() const
+{
+    if (isSprinting)
+        return maxSpeed;
+    else
+        return movementSpeed;
 }
 
 void Camera::updateCameraVectors()
