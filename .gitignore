@@ -1,14 +1,30 @@
 # Ignore ALL log files
 *.log
 
-# Ignore build directory
+# Ignore CMake build directory
 target/
 build/
-CMakeCache.txt
 CMakeFiles/
+CMakeCache.txt
 cmake_install.cmake
-Makefile
+compile_commands.json
+CMakePresets.json
 *.ninja
 *.make
-compile_commands.json
+Makefile
 
+# Ignore Visual Studio build files
+.vs/
+out/
+CMakeSettings.json
+CMakeUserPresets.json
+
+# Ignore MSVC build artifacts
+*.obj
+*.pdb
+*.exe
+*.dll
+*.lib
+*.exp
+*.idb
+*.ipch
