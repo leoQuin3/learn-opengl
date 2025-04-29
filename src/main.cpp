@@ -11,6 +11,7 @@
 const unsigned int SCREEN_WIDTH = 1080;
 const unsigned int SCREEN_HEIGHT = 1080;
 
+// NOTE: Make sure the executive is one directory down from project root (ie. make sure its built in './build/' minus quotes)
 const char* VERTEX_FILE_PATH = "../vert.glsl";
 const char* CUBE_FRAG_FILE_PATH = "../cube_frag.glsl";
 const char* LIGHT_FRAG_FILE_PATH = "../light_frag.glsl";
