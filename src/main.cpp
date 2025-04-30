@@ -30,6 +30,10 @@ const glm::vec3 INITIAL_CAM_POS = glm::vec3(0.f, 0.f, 3.f);
 bool firstMouse = true;
 Camera camera = Camera(INITIAL_CAM_POS, glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f));
 
+// Flashlight
+bool isFlashlightOn = false;
+bool canToggleFlashlight = true;
+
 void processInput(GLFWwindow *window);
 void framebufferSizeCallback(GLFWwindow *window, int width, int height);
 void mouseCallback(GLFWwindow *window, double xPos, double yPos);
@@ -232,14 +236,14 @@ int main()
         // Spotlight
         cubeShader.setVec3("spotLight.position", camera.position);
         cubeShader.setVec3("spotLight.direction", camera.getFront());
-        cubeShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-        cubeShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+        cubeShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(8.5f)));
+        cubeShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(11.5f)));
         cubeShader.setFloat("spotLight.constant", 1.f);
         cubeShader.setFloat("spotLight.linear", .09f);
         cubeShader.setFloat("spotLight.quadratic", .032f);
-        cubeShader.setVec3("spotLight.ambient", glm::vec3(.2f));
-        cubeShader.setVec3("spotLight.diffuse", glm::vec3(2.f));
-        cubeShader.setVec3("spotLight.specular", glm::vec3(1.f));
+        cubeShader.setVec3("spotLight.ambient", glm::vec3(.05f) * static_cast<float>(isFlashlightOn));
+        cubeShader.setVec3("spotLight.diffuse", glm::vec3(2.f) * static_cast<float>(isFlashlightOn));
+        cubeShader.setVec3("spotLight.specular", glm::vec3(1.f) * static_cast<float>(isFlashlightOn));
 
         // Cube transformations
         glm::mat4 model = glm::mat4(1.f);
@@ -349,6 +353,15 @@ void processInput(GLFWwindow *window)
         camera.position = INITIAL_CAM_POS;
         camera.lookAtPosition(glm::vec3(0.f));
     }
+
+    // Toggle flashlight
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && canToggleFlashlight)
+    {
+        canToggleFlashlight = false;
+        isFlashlightOn = !isFlashlightOn ? true : false;
+    }
+    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE)
+        canToggleFlashlight = true;
 }
 
 // Rotate camera using mouse
